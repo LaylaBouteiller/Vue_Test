@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Interface</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+  <body>
+    <div id="app">
+      <div class="container">
+
+        <header>
+          <div class="login">Login: <input type="text" v-model="user"/></div>
+          <div class="header">Vous êtes connecté en tant que {{ user }}</div>
+        </header>
+
+        <main>
+          <div class="content">
+
+            <h1 v-if="commandes.length > 0">Ma commande</h1>
+            <fiche-produit v-for="commande in commandes" v-bind:nom="commande" role="recap">{{commande}}</fiche-produit>
+
+            <h2 v-bind:class="affichage">Produits disponible</h2>
+            
+            
+              <fiche-produit v-for="produit in produits" v-bind:nom="produit" v-on:commande-passee="commander" role="commande">{{ produit }}</fiche-produit>
+              
+            
+        </main>
+      </div>
+      
+    </div>
+
+    <script>
+      Vue.component('fiche-produit', {
+        template: `
+        <div class='col'>
+          <p class="produit">{{nom}}</p>
+          <button v-on:click="passer_commande(nom)" v-if="role == 'commande'">Commander</button>
+        </div>
+          `,
+        props: ['nom', 'role'],
+        methods: {
+          passer_commande: function(produit){
+            this.$emit('commande-passee', produit)
+          }
+        }
+      });
+      var app = new Vue({
+        el: "#app",
+        data: {
+          user: "",
+          produits: ["Pizza", "Tacos", "Burger"],
+          commandes: [],
+          affichage: "test"
+        },
+        methods: {
+          commander: function(produit){
+            this.commandes.push(produit);
+          }
+        }
+      })
+    </script>
+  </body>
+
+</html>
